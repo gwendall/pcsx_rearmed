@@ -1540,6 +1540,10 @@ int ISOopen(const char *fname)
 	// guess whether it is mode1/2048
 	if (cdHandle && cdimg_read_func == cdread_normal && size_main % 2048 == 0) {
 		unsigned int modeTest = 0;
+		// the metadata probes above (handlechd in particular, reading
+		// and rejecting the "MComprHD" tag) may have left the shared
+		// handle's position past the start of the file
+		fseeko(cdHandle, 0, SEEK_SET);
 		if (!fread(&modeTest, sizeof(modeTest), 1, cdHandle)) {
 			SysPrintf(_("File IO error in <%s:%s>.\n"), __FILE__, __func__);
 		}
